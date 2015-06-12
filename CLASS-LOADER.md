@@ -62,7 +62,7 @@ require_relative 'calendar'
 
 ## 基于bundler的gem管理机制(以rails app为例)
 
-首先，app启动的时候会默认执行<APP_ROOT>/config/boot.rb，根据Gemfile初始化$LOAD_PATH，将已经定义好的gem的lib目录加入$LOAD_PATH:
+首先，app启动的时候会默认执行 $APP_ROOT/config/boot.rb，根据Gemfile初始化$LOAD_PATH，将已经定义好的gem的lib目录加入$LOAD_PATH:
 
 ```
 require 'rubygems'
