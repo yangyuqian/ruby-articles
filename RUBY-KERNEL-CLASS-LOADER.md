@@ -31,6 +31,10 @@ Ruby 内核并不要求统一管理类，理论上我们的类文件可以分布
 $:.unshift File.dirname(__FILE__)
 ```
 
+当然，即便有 $LOAD_PATH 还是不够的, 很多第三方类库里面的依赖使用者显然是不清楚的, 要让程序员写出好代码，又要维护本不是自己开发的一些第三方类库的依赖, 那我还是回去写汇编好了.
+
+Ruby 的世界不能容忍每个人都去手动维护一坨 $LOAD_PATH 初始化脚本，那么就有了 Bundler, 提供了一系列优雅地管理第三方类库 $LOAD_PATH 的解决方案，详情参见 [基于 Bundler 的 Gem 管理机制](https://github.com/yangyuqian/ruby-articles/blob/master/BUNDLER.md)
+
 # Ruby Kernel 中的类加载
 
 Ruby 内核主要提供了 4 个类加载命令，分别是 load, autoload, require, require_relative.
