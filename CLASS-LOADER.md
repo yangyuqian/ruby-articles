@@ -1,59 +1,64 @@
 ## Ruby Kernel中的类加载
 
-### load(filename, wrap=false) → true/false
+### Kernel.load(filename, wrap=false) → true/false
+
+加载 calendar.rb，并用匿名module包装文件内容，保护global namespace
 
 ```
-# 加载calendar.rb，并用匿名module包装文件内容，保护global namespace
 load './calendar.rb', true
-# 加载calendar.rb到global namespace
+```
+
+加载calendar.rb到global namespace
+
+```
 load './calendar.rb’
 ```
 
-性质：
+Tips:
 
-1. 每次都会加载，因此分布在多个文件中的类能够正确加载
+1. 默认会从 $LOAD_PATH 查找文件
 
-2. 默认会从$LOAD_PATH查找文件($:)， $:.unshift ‘.'将当前目录加入$LOAD_PATH，然后load ‘calendar.rb’，这里必须要带rb后缀
+2. 每次调用都会加载文件
+
+3. 在使用 rails console 调试过程中，如果修改了类的内容，可以采用 load 来加载最新的类定义
 
 
-### autoload(module, filename) → nil
+### Kernel.autoload(module, filename) → nil
 
 ```
 autoload :Calendar, './calendar.rb’
 ```
 
-性质：
+Tips:
 
-1. 第一次访问Calendar的时候会尝试加载calendar.rb文件，然后查找内容中Calendar的类定义，如果没找到（可能该文件中没有）会报错
+1. 调用 autoload 仅仅创建了一个钩子，并未真正加载
 
-2. 调用autoload仅仅创建了一个钩子，并未真正加载
+2. 如果访问某个类定义触发了一个 autoload 的钩子，就会去尝试先加载文件后读取类定义
 
-
-### require(name) → true or false
+### Kernel.require(name) → true or false
 
 ```
 require './calendar.rb’
 ```
 
-性质：
+Tips:
 
-1. 默认会从$LOAD_PATH查找文件($:)，$:.unshift ‘.'，将当前目录加入$LOAD_PATH，然后load ‘calendar’，rb后缀不是必须的（区别于load方法），自动查找的后缀可以是so, o, dll
+1. 默认会从 $LOAD_PATH 查找文件
 
-2. 抛开后缀的扩展，load每次都会加载，但require只加载一次，一旦某个文件被加载过一次，之后就不再加载，不管是基于$LOAD_PATH的相对路径还是绝对路径，只要是同一个文件，就只加载一次
+2. rb 后缀不是必须的（区别于load方法），自动查找的后缀可以是 so, o, dll
+
+3. Kernel.load 每次都会加载，但 Kernel.require 对同一个文件只加载一次
 
 
-### require_relative(string) → true or false
+### Kernel.require_relative(string) → true or false
 
 ```
 require_relative 'calendar'
 ```
 
-性质：
+Tips:
 
-1. 直接查找相对路径
-
-2. 其他行为和require一致，每个文件也只加载一次
-
+1. 行为和 Kernel.require 一致，区别在于 Kernel.require_relative 会从将当前目录也加入 $LOAD_PATH
 
 
 ## 基于bundler的gem管理机制(以rails app为例)
@@ -107,13 +112,11 @@ module Demo
 end
 ```
 
-注：这个例子稍微有些复杂（建议先了解前面的bundler机制），在rails中加载一个gem也可以这么干，区别在于gem中会在demo下弄一个demo.rb来作为整个gem的入口，而这里弄的是一个bin/demo，区别仅仅是$LOAD_PATH设置，机制是一致的
+结论：
 
 1. ActiveSupport::Autoload支持原声的autoload特性，并为其加入了默认值
 
 2. autoload是为了解决类比较多的情况下存在复杂依赖时自动管理类加载的方案（A依赖B，加载A之前需要加载B）
-
-3. 在某个类存在依赖的类时，也能自动加载
 
 ### eager_autoload
 
@@ -132,7 +135,9 @@ module Demo
 end
 ```
 
-实例：[用ActiveSupport中的类加载来构造proj](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_activesupport_autoload.zip)
+### 实例
+
+[用ActiveSupport中的类加载来构造proj](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_activesupport_autoload.zip)
 
 
 ## 参考文献：
