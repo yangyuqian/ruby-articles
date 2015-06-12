@@ -32,8 +32,6 @@ autoload :Calendar, './calendar.rb’
 
 2. 调用autoload仅仅创建了一个钩子，并未真正加载
 
-3. 如果同时出现了多次相同类的autoload（文件路径可能不同），只有最后一个会起作用，在同一个类分布在多个文件中时，类定义将不能完整加载
-
 
 ### require(name) → true or false
 
