@@ -96,3 +96,63 @@ Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就�
 [一个基于Bundler的类加载实例](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_bundler.zip)
 
 注：执行前请先bundle install
+
+
+## ActiveSupport中类加载机制
+
+### autoload
+
+实例分析：
+
+```
+# add app root into LOAD_PATH
+$:.unshift File.expand_path('../../',__FILE__)
+module Demo
+  # load user module through active_support/dependencies/auto_load
+  # 在当前$LOAD_PATH下查找demo/user.rb，这里的demo对应了这一层的module名称
+  extend ActiveSupport::Autoload
+  autoload :User
+end
+```
+
+注：这个例子稍微有些复杂（建议先了解前面的bundler机制），在rails中加载一个gem也可以这么干，区别在于gem中会在demo下弄一个demo.rb来作为整个gem的入口，而这里弄的是一个bin/demo，区别仅仅是$LOAD_PATH设置，机制是一致的
+
+1. ActiveSupport::Autoload支持原声的autoload特性，并为其加入了默认值
+
+2. autoload是为了解决类比较多的情况下存在复杂依赖时自动管理类加载的方案（A依赖B，加载A之前需要加载B）
+
+3. 在某个类存在依赖的类时，也能自动加载
+
+### eager_autoload
+
+并非一种独立的类加载机制，而是基于autoload之上的一种线程安全的实现，在Rails 4中，这就显得不那么关键了，参见[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)。
+
+```
+module Demo
+  # load user module through active_support/dependencies/auto_load
+  extend ActiveSupport::Autoload
+  autoload :User
+  # 这里采用eager_autoload记载所有的类
+  eager_autoload do
+    autoload :Role
+    autoload :RoleDeco
+  end
+end
+```
+
+
+## 参考文献：
+
+[Ways to load code](https://practicingruby.com/articles/ways-to-load-code)
+
+[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)
+
+[Rails启动过程](https://ruby-china.org/topics/21294)
+
+[Active Support 核心扩展](http://guides.ruby-china.org/active_support_core_extensions.html)
+
+[Gem Packaging: Best Practices](http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices/)
+
+[The Rails Initialization Process](http://guides.rubyonrails.org/initialization.html)
+
+[How and Why Bundler Groups](http://yehudakatz.com/2010/05/09/the-how-and-why-of-bundler-groups/)
