@@ -59,3 +59,38 @@ require_relative 'calendar'
 1. 直接查找相对路径
 
 2. 其他行为和require一致，每个文件也只加载一次
+
+
+
+## 基于bundler的gem管理机制(以rails app为例)
+
+首先，app启动的时候会默认执行<APP_ROOT>/config/boot.rb，根据Gemfile初始化$LOAD_PATH，将已经定义好的gem的lib目录加入$LOAD_PATH:
+
+```
+require 'rubygems'
+# Set up gems listed in the Gemfile.
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
+```
+
+然后，rails会执行 app/config/application.rb
+
+```
+require File.expand_path('../boot', __FILE__)
+require 'rails/all'
+Bundler.require(*Rails.groups(:assets => %w(development test)))
+# 此处省略module定义，内容和具体的proj相关
+```
+
+接着，Bundler会加载一些group，和具体的RAILS_ENV相关(参见官方文档)，这样可以加载自定义的demo group下的gems:
+
+```
+require 'bundler'
+Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就不影响具体的group加载了，实际开发里面不会这样
+```
+
+通过这样的方式将定义了的gem全部加载到内存中，提供给业务代码
+
+实战：构造一个demo app，采用bundler来加载gem
+
+[一个基于Bundler的类加载实例](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_bundler.zip)
