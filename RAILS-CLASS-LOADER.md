@@ -79,6 +79,10 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 
 前面做了这么多准备，就为了 Rails 这一哆嗦，本章主要介绍 Rails 中给出的“启发式”类加载解决方案。
 
-详情参见: [Rails 类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md)
+## autoload_paths
+
+## Autoloading Algorithms
+
+## Common Gotchas
 
 
