@@ -80,14 +80,12 @@ Bundler.require(*Rails.groups(:assets => %w(development test)))
 # 此处省略module定义，内容和具体的proj相关
 ```
 
-接着，Bundler会加载一些group，和具体的RAILS_ENV相关(参见官方文档)，这样可以加载自定义的demo group下的gems:
+其中Bundler初始化gem group的机制，和具体的RAILS_ENV相关(参见官方文档)，以下代码可以将自定义的demo group下的gems加入LOAD_PATH:
 
 ```
 require 'bundler'
 Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就不影响具体的group加载了
 ```
-
-通过这样的方式将定义了的gem全部加载到内存中，提供给业务代码
 
 实战：构造一个demo app，采用bundler来加载gem
 
