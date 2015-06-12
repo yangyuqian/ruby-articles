@@ -140,6 +140,8 @@ module Demo
 end
 ```
 
+实例：[用ActiveSupport中的类加载来构造proj](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_activesupport_autoload.zip)
+
 
 ## 参考文献：
 
