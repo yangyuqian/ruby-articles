@@ -7,7 +7,7 @@
 FreeWheel现在处于快速发展期，欢迎广大有志的技术青年加入我们的团队！
 
 
-## Rails 中的类加载机制
+## [Rails 中的类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md)
 
 从 Ruby 和 Rails 中的常量查找(Constant Lookup)机制入手，介绍了：
 
