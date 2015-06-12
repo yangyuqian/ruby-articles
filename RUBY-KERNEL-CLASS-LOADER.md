@@ -31,8 +31,9 @@ Ruby 内核并不要求统一管理类，理论上我们的类文件可以分布
 $:.unshift File.dirname(__FILE__)
 ```
 
-
 # Ruby Kernel 中的类加载
+
+Ruby 内核主要提供了 4 个类加载命令，分别是 load, autoload, require, require_relative.
 
 ## Kernel.load(filename, wrap=false) → true/false
 
