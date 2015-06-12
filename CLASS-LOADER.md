@@ -35,6 +35,8 @@ Tips:
 
 2. 如果访问某个类定义触发了一个 autoload 的钩子，就会去尝试先加载文件后读取类定义
 
+3. 只会真正加载一次
+
 ### Kernel.require(name) → true or false
 
 ```
@@ -61,9 +63,14 @@ Tips:
 1. 行为和 Kernel.require 一致，区别在于 Kernel.require_relative 会从将当前目录也加入 $LOAD_PATH
 
 
-## 基于bundler的gem管理机制(以rails app为例)
+## 基于bundler的gem管理机制
 
-首先，app启动的时候会默认执行 $APP_ROOT/config/boot.rb，根据Gemfile初始化$LOAD_PATH，将已经定义好的gem的lib目录加入$LOAD_PATH:
+### 启动 Rails App 时加载 Gem 的原理
+
+Rails App 启动时会执行 $APP_ROOT/config/boot.rb:
+  * 根据 Gemfile 初始化 $LOAD_PATH , 并将已经定义好的 Gem 的 lib 目录加入 $LOAD_PATH
+
+以下是一个 boot.rb 的实际例子：
 
 ```
 require 'rubygems'
@@ -72,23 +79,19 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
 ```
 
-然后，rails会执行 app/config/application.rb
+Rails App 会执行 app/config/application.rb:
+  * 根据 RAILS_ENV 将 Gemfile 中符合要求的 Gem group 加入 $LOAD_PATH
 
 ```
 require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 Bundler.require(*Rails.groups(:assets => %w(development test)))
-# 此处省略module定义，内容和具体的proj相关
+# 此处省略module定义，内容和具体的项目相关
 ```
 
-其中Bundler初始化gem group的机制，和具体的RAILS_ENV相关(参见官方文档)，以下代码可以将自定义的demo group下的gems加入LOAD_PATH:
+### 实例
 
-```
-require 'bundler'
-Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就不影响具体的group加载了
-```
-
-实战：构造一个demo app，采用bundler来加载gem
+构造一个 Demo App, 采用 Bundler 来加载 Gem:
 
 [一个基于Bundler的类加载实例](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_bundler.zip)
 
