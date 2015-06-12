@@ -7,13 +7,16 @@
 FreeWheel现在处于快速发展期，欢迎广大有志的技术青年加入我们的团队！
 
 
-## [Ruby 类加载](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md)
+## Rails 中的类加载机制
 
-结合实例，介绍了：
+从 Ruby 和 Rails 中的常量查找(Constant Lookup)机制入手，介绍了：
 
-1. [Ruby内核类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md#loadfilename-wrapfalse--truefalse)
+1. Ruby 内核中的常量查找和类加载机制，以及存在的问题
 
-2. [Bundler的gem管理机制](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md#基于bundler的gem管理机制以rails-app为例)
+2. Bundler 提供的 gem 管理机制
 
-3. [ActiveSupport扩展的类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md#activesupport中类加载机制)
+3. Rails 中提供的启发式的常量查找和类加载机制，以及存在的问题
+
+4. 案例分析和在 Rails 使用中需要注意的一些问题
+
 
