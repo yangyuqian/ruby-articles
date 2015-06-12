@@ -63,7 +63,7 @@ Tips:
 1. 行为和 Kernel.require 一致，区别在于 Kernel.require_relative 会从将当前目录也加入 $LOAD_PATH
 
 
-## 基于bundler的gem管理机制
+## 基于 Bundler 的 Gem 管理机制
 
 ### 启动 Rails App 时加载 Gem 的原理
 
