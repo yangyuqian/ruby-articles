@@ -86,3 +86,10 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 ## Common Gotchas
 
 
+# 参考文献
+
+[Autoloading and Reloading Constants](http://guides.rubyonrails.org/autoloading_and_reloading_constants.html)
+
+[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)
+
+[Rails autoloading — how it works, and when it doesn't](http://urbanautomaton.com/blog/2013/08/27/rails-autoloading-hell)
