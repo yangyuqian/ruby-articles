@@ -94,3 +94,5 @@ Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就�
 实战：构造一个demo app，采用bundler来加载gem
 
 [一个基于Bundler的类加载实例](https://github.com/yangyuqian/ruby-articles/blob/master/samples/demo_bundler.zip)
+
+注：执行前请先bundle install
