@@ -1,13 +1,3 @@
-## 摘要
-
-结合实例，介绍了：
-
-1. [Ruby内核类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md#loadfilename-wrapfalse--truefalse)
-
-2. [Bundler的gem管理机制，以rails项目为例介绍如何通过Bundler管理一个简单项目的gem](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md#基于bundler的gem管理机制以rails-app为例)
-
-3. [介绍Active Support中的类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/CLASS-LOADER.md#activesupport中类加载机制)
-
 ## Ruby Kernel中的类加载
 
 ### load(filename, wrap=false) → true/false
