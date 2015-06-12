@@ -126,32 +126,75 @@ autoload :Calendar, './calendar.rb'
 
 ### Kernel.require(name) → true or false
 
+和 autoload 一样, require 想解决的也是性能问题: require 只在第一次被调用的时候被触发，之后针对相同文件的 require 就不会真正执行了:
+
 ```
-require './calendar.rb’
+irb(main):001:0> require './calendar.rb'
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+
+=> true
+irb(main):002:0> require './calendar.rb'
+=> false
 ```
 
-Tips:
+require 比 load 更强大一些, load 是必须给出文件后缀的，而 require 可以不给出后缀，因此相同的名字对 .so .o .dll都是有效的：
 
-1. 默认会从 $LOAD_PATH 查找文件
+```
+irb(main):001:0> require './calendar.rb'
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
 
-2. rb 后缀不是必须的（区别于load方法），自动查找的后缀可以是 so, o, dll
+=> true
+irb(main):002:0> require './calendar'
+=> false
+```
 
-3. Kernel.load 每次都会加载，但 Kernel.require 对同一个文件只加载一次
+require 和 load 也都会读取 $LOAD_PATH，因此如果将当前目录加入 $LOAD_PATH，require 也就可以不给相对路径，只给一个文件名了：
 
+```
+irb(main):001:0> $:.unshift File.dirname(__FILE__)
+=> [".", "/Library/Ruby/Site/2.0.0", "/Library/Ruby/Site/2.0.0/x86_64-darwin14", "/Library/Ruby/Site/2.0.0/universal-darwin14", "/Library/Ruby/Site", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/vendor_ruby/2.0.0", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/vendor_ruby/2.0.0/x86_64-darwin14", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/vendor_ruby/2.0.0/universal-darwin14", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/vendor_ruby", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/x86_64-darwin14", "/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/2.0.0/universal-darwin14"]
+irb(main):002:0> require 'calendar'
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+
+=> true
+```
 
 ### Kernel.require_relative(string) → true or false
 
+require_relative 相当于是默认将当前路径加入了 $LOAD_PATH，不用给相对路径或绝对路径, 其他和 require 是一致的：
+
 ```
-require_relative 'calendar'
+irb(main):001:0> require_relative 'calendar'
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+
+=> true
+irb(main):002:0> require_relative 'calendar.rb'
+=> false
 ```
-
-Tips:
-
-1. 行为和 Kernel.require 一致，区别在于 Kernel.require_relative 会从将当前目录也加入 $LOAD_PATH
-
-
-
-
 
 
 # 参考文献
