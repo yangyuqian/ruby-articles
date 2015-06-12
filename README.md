@@ -2,9 +2,7 @@
 
 ## 作者介绍
 
-Yang, Yuqian (yang_yuqian@163.com), [CSDN主页](http://blog.csdn.net/boscoyounglovely).
-
-[FreeWheel](http://baike.baidu.com/link?url=CMQTQA8N-eBfrsn5dmazsIFN2KP4PzTV_0lqLYheJzpgvyOHxmdxeARr6nIQa1ZGiFDDhjsTBNSFgRUsz-Rseq)软件开发工程师，主要从事Ruby on Rails相关的开发。
+[Yang, Yuqian]((http://blog.csdn.net/boscoyounglovely)), 目前任 [FreeWheel](http://baike.baidu.com/link?url=CMQTQA8N-eBfrsn5dmazsIFN2KP4PzTV_0lqLYheJzpgvyOHxmdxeARr6nIQa1ZGiFDDhjsTBNSFgRUsz-Rseq)软件开发工程师，主要从事Ruby on Rails相关的开发。
 
 新技术领域的重度痴迷患者，沉醉于Docker，AngularJS等技术中不可自己拔出来。
 
