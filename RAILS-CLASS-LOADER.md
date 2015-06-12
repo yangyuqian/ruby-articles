@@ -67,13 +67,18 @@ Rails 的出现让基于 Ruby 来做大项目成为可能, 我相信原因之一
 
 所谓“万法归宗”，不论怎么高大上的解决方案，落实到实现上，也是采用了一些已有的东西，Ruby 的内核加载机制就是万法的源头.
 
-Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具体参见[Ruby 的内核类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md), Rails等框架提供的能力就是用“启发式”的去找到一个类定义的文件，并将其自动加载到内存中.
+Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具体参见[Ruby 内核类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md), Rails等框架提供的能力就是用“启发式”的去找到一个类定义的文件，并将其自动加载到内存中.
 
 # Ruby “常量查找”(Constant Lookup)机制
 
+“启发式”的类加载方式需要有一个触发点，这个出发点就是 Ruby 的 const_missing 方法, 而在什么时候会触发它呢？这就需要了解 Ruby 是怎么判断一个类（常量）是否已经在内存中定义了的原理了.
+
+详情参见 [Ruby “常量查找”(Constant Lookup)机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md)
 
 # Rails 类加载机制
 
+前面做了这么多准备，就为了 Rails 这一哆嗦，本章主要介绍 Rails 中给出的“启发式”类加载解决方案。
 
+详情参见: [Rails 类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md)
 
 
