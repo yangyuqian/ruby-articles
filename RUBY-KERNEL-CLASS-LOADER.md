@@ -143,7 +143,7 @@ irb(main):002:0> require './calendar.rb'
 => false
 ```
 
-require 比 load 更强大一些, load 是必须给出文件后缀的，而 require 可以不给出后缀，因此相同的名字对 .so .o .dll都是有效的：
+require 比 load 更强大一些, load 是必须给出文件后缀的，而 require 可以不给出后缀，且相同的名字对 .so .o .dll都是有效的：
 
 ```
 irb(main):001:0> require './calendar.rb'
