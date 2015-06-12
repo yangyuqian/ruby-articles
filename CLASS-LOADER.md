@@ -68,7 +68,7 @@ Tips:
 ### 启动 Rails App 时加载 Gem 的原理
 
 Rails App 启动时会执行 $APP_ROOT/config/boot.rb:
-  * 根据 Gemfile 初始化 $LOAD_PATH , 并将已经定义好的 Gem 的 lib 目录加入 $LOAD_PATH
+  * 根据 Gemfile 初始化 $LOAD_PATH , 并将 Gemfile 中声明的 gem 的 lib 目录加入 $LOAD_PATH
 
 以下是一个 boot.rb 的实际例子：
 
@@ -102,28 +102,36 @@ Bundler.require(*Rails.groups(:assets => %w(development test)))
 
 ### autoload
 
-实例分析：
+创建以下目录结构：
+  * $APP_ROOT/demo.rb, 定义了类加载的入口
+    * $APP_ROOT/demo/user.rb, 定义了一个 User module
+
+$APP_ROOT/demo.rb 内容如下:
 
 ```
-# add app root into LOAD_PATH
+# 此处省略了 Bundler 管理 active_support 依赖的内容，见前面章节
+
+# Add the app root into LOAD_PATH
 $:.unshift File.expand_path('../../',__FILE__)
+
 module Demo
   # load user module through active_support/dependencies/auto_load
-  # 在当前$LOAD_PATH下查找demo/user.rb，这里的demo对应了这一层的module名称
+  # 在当前 $LOAD_PATH 下查找 demo/user.rb, 这里的 demo 对应了当前 module
   extend ActiveSupport::Autoload
   autoload :User
 end
 ```
 
-结论：
+Tips:
 
-1. ActiveSupport::Autoload支持原声的autoload特性，并为其加入了默认值
+1. Rails 中根据 $LOAD_PATH 来管理了很多默认的查找路径
+  * 如 User , 如不声明，就会在当前的 module/class 的相对路径下去查找
 
-2. autoload是为了解决类比较多的情况下存在复杂依赖时自动管理类加载的方案（A依赖B，加载A之前需要加载B）
+2. 在 Rails 3 及以下版本中是线程不安全的
 
 ### eager_autoload
 
-并非一种独立的类加载机制，而是基于autoload之上的一种线程安全的实现，在Rails 4中，这就显得不那么关键了，参见[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)。
+并非一种独立的类加载机制，而是基于 autoload 之上的一种线程安全的实现，在 Rails 4 中，这就显得不那么关键了，参见 [Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)
 
 ```
 module Demo
