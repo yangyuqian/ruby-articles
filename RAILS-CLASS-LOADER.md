@@ -71,7 +71,7 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 
 # Ruby “常量查找”(Constant Lookup)机制
 
-“启发式”的类加载方式需要有一个触发点，这个出发点就是 Ruby 的 const_missing 方法, 而在什么时候会触发它呢？这就需要了解 Ruby 是怎么判断一个类（常量）是否已经在内存中定义了的原理了.
+“启发式”的类加载方式需要有一个触发点来告诉响应的框架什么时候加载什么类: 这个触发点就是 Ruby 的 const_missing 方法, 而在什么时候会触发它呢？这就需要了解 Ruby 是怎么判断一个类（常量）是否已经在内存中定义了的原理了.
 
 详情参见 [Ruby “常量查找”(Constant Lookup)机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md)
 
