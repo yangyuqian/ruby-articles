@@ -9,7 +9,7 @@ FreeWheel现在处于快速发展期，欢迎广大有志的技术青年加入�
 
 ## [Rails 中的类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md)
 
-本文从使用的角度结合实例代码介绍了：
+本文从实战出发, 结合实例代码介绍了：
 
 1. Ruby 内核中的常量查找和类加载机制，以及存在的问题
 
