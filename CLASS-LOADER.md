@@ -143,16 +143,16 @@ end
 
 ## 参考文献：
 
-[Ways to load code](https://practicingruby.com/articles/ways-to-load-code)
-
-[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)
-
-[Rails启动过程](https://ruby-china.org/topics/21294)
-
-[Active Support 核心扩展](http://guides.ruby-china.org/active_support_core_extensions.html)
-
-[Gem Packaging: Best Practices](http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices/)
-
 [The Rails Initialization Process](http://guides.rubyonrails.org/initialization.html)
 
 [How and Why Bundler Groups](http://yehudakatz.com/2010/05/09/the-how-and-why-of-bundler-groups/)
+
+[Active Support 核心扩展](http://guides.ruby-china.org/active_support_core_extensions.html)
+
+[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)
+
+[Gem Packaging: Best Practices](http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices/)
+
+[Ways to load code](https://practicingruby.com/articles/ways-to-load-code)
+
+[Rails启动过程](https://ruby-china.org/topics/21294)
