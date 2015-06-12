@@ -37,44 +37,92 @@ Ruby 的世界不能容忍每个人都去手动维护一坨 $LOAD_PATH 初始化
 
 # Ruby Kernel 中的类加载
 
-Ruby 内核主要提供了 4 个类加载命令，分别是 load, autoload, require, require_relative.
+Ruby 内核提供了 4 个类加载命令，分别是 load, autoload, require, require_relative, 分别对应了不同的使用场景，可谓做到了“小的可以打蚊子，大的可以打飞机”.
 
 ## Kernel.load(filename, wrap=false) → true/false
 
-加载 calendar.rb，并用匿名module包装文件内容，保护global namespace
+load 命令提供了一种最原始的方法，即每次都会重新加载整个文件，刷新内存中的类定义.
+
+新建一个calendar.rb, 内容如下:
 
 ```
-load './calendar.rb', true
+# calendar.rb
+class Calendar
+  def initialize(month, year)
+    @month = month
+    @year  = year
+  end
+
+  # A simple wrapper around the *nix cal command.
+  def to_s
+    IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
+  end
+end
+
+puts Calendar.new(8, 2011)
 ```
 
-加载calendar.rb到global namespace
+开一个 irb console 直接加载 calendar.rb:
 
 ```
-load './calendar.rb’
+# 这里可以给绝对路径，也可以是相对路径
+irb(main):001:0> load './calendar.rb'
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+
+=> true
 ```
 
-Tips:
+这存在一个问题，即 calendar.rb 加载进来后可能会影响当前内存中的一些状态, 也可能被当前内存中的状态影响，比如常量的值等等. 如果希望 calendar.rb的内容 悄悄的加载，不影响当前内存中的状态，load 命令支持用一个匿名 Module 包装被加载的内容，从而保证了这个文件里面的东西都是在限定范围内执行的:
 
-1. 默认会从 $LOAD_PATH 查找文件
+```
+irb(main):001:0> load './calendar.rb', true
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
 
-2. 每次调用都会加载文件
+=> true
+```
 
-3. 在使用 rails console 调试过程中，如果修改了类的内容，可以采用 load 来加载最新的类定义
+觉得相对/绝对路径太麻烦？可以将当前路径加入 $LOAD_PATH:
 
+```
+irb(main):001:0> $:.unshift File.dirname(__FILE__)
+```
+
+然后加载文件只需要给出文件名:
+
+```
+irb(main):002:0> load 'calendar.rb'
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+
+=> true
+```
 
 ### Kernel.autoload(module, filename) → nil
 
+load 命令每次都加载类有些浪费，很多类并不是一开始就需要，可以用 autoload 来先创建一个钩子，等到真的访问到的时候再加载：
+
 ```
-autoload :Calendar, './calendar.rb’
+autoload :Calendar, './calendar.rb'
 ```
 
-Tips:
-
-1. 调用 autoload 仅仅创建了一个钩子，并未真正加载
-
-2. 如果访问某个类定义触发了一个 autoload 的钩子，就会去尝试先加载文件后读取类定义
-
-3. 只会真正加载一次
+但这种方式有个问题: 相同常量如果多次定义 autoload 钩子，只有最后一个会被触发. 设想在实际开发中，类定义可能分布在多个文件中，所以这种方式并不常用.
 
 ### Kernel.require(name) → true or false
 
