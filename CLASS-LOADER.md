@@ -84,7 +84,7 @@ Bundler.require(*Rails.groups(:assets => %w(development test)))
 
 ```
 require 'bundler'
-Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就不影响具体的group加载了，实际开发里面不会这样
+Bundler.require(:default ,:demo)  # 这里绕过了Rails.groups，RAILS_ENV就不影响具体的group加载了
 ```
 
 通过这样的方式将定义了的gem全部加载到内存中，提供给业务代码
