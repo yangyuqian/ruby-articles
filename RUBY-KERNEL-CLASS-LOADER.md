@@ -16,6 +16,22 @@ Ruby 内核类加载机制是一切类加载的根本，实际开发虽少有直
 
 如果要对第三方的类库和项目代码进行统一管理，又不是灵活性，就势必要对文件做一个抽象， 就好像有一个文件系统，下面挂了很多个类库，以及业务代码，加载类的时候，只需要去这些地方找就行了，这个文件系统的抽象就是本章要介绍的 $LOAD_PATH.
 
+Ruby 内核并不要求统一管理类，理论上我们的类文件可以分布在系统的各个角落，意味着我们需要为每个文件制定一个绝对路径活着相对路径，想想都那么蛋疼！
+
+首先，打开一个 irb console, 默认的 $LOAD_PATH， 实际上是一个 String Array:
+
+```
+2.1.5 :001 > $:
+ => ["/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/site_ruby/2.1.0", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/site_ruby/2.1.0/x86_64-linux", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/site_ruby", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/vendor_ruby/2.1.0", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/vendor_ruby/2.1.0/x86_64-linux", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/vendor_ruby", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/2.1.0", "/home/vagrant/.rvm/rubies/ruby-2.1.5/lib/ruby/2.1.0/x86_64-linux"] 
+```
+
+这样就可以很容易将新的类库对应的跟路径加入 $LOAD_PATH，以下代码会将当前的目录加入 $LOAD_PATH:
+
+```
+$:.unshift File.dirname(__FILE__)
+```
+
+
 # Ruby Kernel 中的类加载
 
 ## Kernel.load(filename, wrap=false) → true/false
