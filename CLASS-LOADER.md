@@ -43,7 +43,7 @@ require './calendar.rb’
 
 性质：
 
-1. 默认会从$LOAD_PATH查找文件($:)， $:.unshift ‘.'将当前目录加入$LOAD_PATH，然后load ‘calendar’，rb后缀不是必须的（区别于load方法），自动查找的后缀可以是so, o, dll
+1. 默认会从$LOAD_PATH查找文件($:)，$:.unshift ‘.'，将当前目录加入$LOAD_PATH，然后load ‘calendar’，rb后缀不是必须的（区别于load方法），自动查找的后缀可以是so, o, dll
 
 2. 抛开后缀的扩展，load每次都会加载，但require只加载一次，一旦某个文件被加载过一次，之后就不再加载，不管是基于$LOAD_PATH的相对路径还是绝对路径，只要是同一个文件，就只加载一次
 
