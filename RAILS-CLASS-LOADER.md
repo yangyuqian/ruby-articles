@@ -79,7 +79,13 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 
 前面做了这么多准备，就为了 Rails 这一哆嗦，本章主要介绍 Rails 中给出的“启发式”类加载解决方案。
 
+值得重复说明的是: Rails 提供的是一种“启发式”的查找类定义文件的算法，真正找到之后加载用的还是 Ruby Kernel 提供的加载机制，具体方式和 RAILS_ENV 有关(dev 下用 load, prod 下用 require).
+
+基本流程是，解释器会先用 Ruby 内核的常量查找算法尝试去找一个类定义，找不到就告诉const_missing，然后 Rails 就跑去猜这个常量会定义在哪里，如果 Rails 还找不到，就抛异常.
+
 ## autoload_paths
+
+
 
 ## Autoloading Algorithms
 
