@@ -2,7 +2,7 @@
 
 ## 作者介绍
 
-[Yang, Yuqian]((http://blog.csdn.net/boscoyounglovely)), 3 年 Java, 1 年 Ruby on Rails 开发经验.
+[Yang, Yuqian]((http://blog.csdn.net/boscoyounglovely)), 北交大计算机硕士, 3 年 Java, 1 年 Ruby on Rails 开发经验.
 
 现任 [FreeWheel](http://baike.baidu.com/link?url=CMQTQA8N-eBfrsn5dmazsIFN2KP4PzTV_0lqLYheJzpgvyOHxmdxeARr6nIQa1ZGiFDDhjsTBNSFgRUsz-Rseq) 软件开发工程师, 热爱钻研各种新技术(如: Docker), 当前主要从事 Ruby on Rails 相关的开发。
 
