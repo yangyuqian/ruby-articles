@@ -206,7 +206,7 @@ end
 
 [Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)一文中提到 Rails 3 下的 autoload 是线程不安全的，为什么呢?
 
-Rails 的 autoload 是基于 Ruby 内核常量查找机制的，其无法获取 nesting 内容，触发 const_missing 的位置在哪儿，Rails 就获得了那个 missing 的常量，具体加载的类和实际执行的路径有关，存在线程安全隐患，考虑下面的例子:
+Rails 的 autoload 是基于 Ruby 内核常量查找机制的，其无法获取 nesting 内容，具体加载的类和实际执行的路径有关，存在线程安全隐患，考虑下面的例子:
 
 ```
 # qux.rb
