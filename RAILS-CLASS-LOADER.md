@@ -284,7 +284,7 @@ Rails 3 中需要配置 eager_load 来避免潜在的并发问题，Rails 4 中�
 require 'something'
 ```
 
-这样干的问题主要是 require 只加载一次 something 类只在第一次被加载，永远不会触发 ActiveSupport 的 autoload，这就意味着，调试的时候修改了 something 需要重启整个 App.
+这样干的问题主要是 require 只加载一次 something 类, 且只在第一次被加载，这样就永远不会触发 ActiveSupport 的 autoload，这就意味着，调试的时候如果修改了 something 需要重启整个 App.
 
 Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 load, production 下用 require.
 
