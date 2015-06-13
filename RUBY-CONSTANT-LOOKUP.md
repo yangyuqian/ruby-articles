@@ -135,7 +135,7 @@ end
 
 2. B 中 Module.nesting == [A::B], 所以找不到任何 A::CREF 定义，抛异常
 
-3. B 中 Module.nesting == [], 所以就算在 B 中定义了 block 中也是无法读取的
+3. B 中 Module.nesting == [], 所以就算在 B 中定义了CREF, block 中也是无法读取的
 
 
 # 参考文献
