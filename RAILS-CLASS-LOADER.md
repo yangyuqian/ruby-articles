@@ -274,6 +274,7 @@ NameError: uninitialized constant Foo::Bar::Qux
     
     * 无奈之下，ActiveSupport 也只好说自己没找到这个常量（实际上是找到了，但一切以 Ruby 的判断为准！N 个凡是！）
 
+Rails 3 中需要配置 eager_load 来避免潜在的并发问题，Rails 4 中就不需要做 eager_load 了，响应的配置方式参考 [Configuring Rails Applications](http://guides.rubyonrails.org/configuring.html)
 
 ### autoload 目录下不要用 require
 
@@ -294,3 +295,5 @@ Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 lo
 [Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)
 
 [Rails autoloading — how it works, and when it doesn't](http://urbanautomaton.com/blog/2013/08/27/rails-autoloading-hell)
+
+[Configuring Rails Applications](http://guides.rubyonrails.org/configuring.html)
