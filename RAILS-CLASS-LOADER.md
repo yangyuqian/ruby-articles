@@ -277,7 +277,15 @@ NameError: uninitialized constant Foo::Bar::Qux
 
 ### autoload 目录下不要用 require
 
+没有 ActiveSupport 的情况下，我们需要用 Ruby 内核类加载机制来加载依赖:
 
+```
+require 'something'
+```
+
+这样干的问题主要是 require 只加载一次 something 类只在第一次被加载，永远不会触发 ActiveSupport 的 autoload，这就意味着，调试的时候修改了 something 需要重启整个 App.
+
+Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 load, production 下用 require.
 
 # 参考文献
 
