@@ -270,7 +270,7 @@ NameError: uninitialized constant Foo::Bar::Qux
     
     * 然后 ActiveSupport 开始努力去寻找这个常量，结果找了半天只找到一个已经存在的常量
     
-    * ActiveSupport 毕竟只是苦力的干活，Ruby 内核才是掌柜的干活，苦力肯定不能擅作主张去加载一个 Ruby 没有加载的东西
+    * ActiveSupport 毕竟只是苦力的干活，Ruby 内核才是掌柜的干活，苦力肯定不能擅作主张去加载一个 Ruby 没有加载的东西（已经存在的常量，如果 Ruby 没有加载就说明不是内核要的那个）
     
     * 无奈之下，ActiveSupport 也只好说自己没找到这个常量（实际上是找到了，但一切以 Ruby 的判断为准！N 个凡是！）
 
