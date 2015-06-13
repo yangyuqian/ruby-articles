@@ -85,7 +85,7 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 
 ## autoload_paths
 
-Rails 维护了类似于 $LOAD_PATH 的变量 autoload_paths，Rails 3 中默认会将 app/<sub_dir> 以及 lib 目录 全部加入 autoload_paths, Rails 4 中去掉了 lib, 不过我们可以自己加上去:
+Rails 维护了类似于 $LOAD_PATH 的变量 autoload_paths，Rails 3 中默认会将 app 下的子目录以及 lib 目录全部加入 autoload_paths, Rails 4 中去掉了 lib, 不过我们可以自己加上去:
 
 ```
 # config/application.rb
@@ -100,9 +100,53 @@ autoload_paths 实际上是在 ActiveSupport::Dependencies.autoload_paths 维护
 ActiveSupport::Dependencies.autoload_paths << '.'
 ```
 
-## Rails 中的常量查找算法
+## ActiveSupport 中的常量查找算法
 
-## Common Gotchas
+Rails 中仅仅提供了一个 autoload_paths 的配置入口，实际的内容都在 ActiveSupport 中维护，因此脱离 Rails 谈 Rails 的类加载机制可能更清楚一些.
+
+新建文件 demo/user.rb，定义如下:
+
+```
+# demo/user.rb 
+module Demo
+  class User
+    "class Demo::User loaded"
+  end
+end
+```
+
+将当前目录加入 autoload_paths:
+
+```
+2.1.5 :008 >   ActiveSupport::Dependencies.autoload_paths << "."
+ => ["."] 
+```
+
+新建 demo/role.rb，定义如下:
+
+```
+# demo/role.rb
+module Demo
+  class Role
+    User
+  end
+end
+```
+
+开一个 irb console, 用 load 命令手动加载 demo/role.rb，发现即使没有为 demo/user.rb 声明任何的 load/require, 它居然被正确访问到了! 这就是 Rails 中的 autoload 机制.
+
+Rails 中假设我们的类名和文件名是有直接关系的，例如 app/models/auth/user.rb 中就应该是以下定义:
+
+```
+# app/models/auth/user.rb
+module Auth
+  class User
+  end
+end
+```
+
+## 常见误区
+
 
 
 # 参考文献
