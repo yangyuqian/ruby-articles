@@ -40,21 +40,7 @@ B = Class.new(A) do
 end
 ```
 
-例4:
-
-```
-class A
-  CREF = "*** CREF in module A"
-end
-
-class B < A
-  class << self
-    puts CREF
-  end
-end
-```
-
-以上 4 个例子基本涵盖了本文将要介绍的解释器中的“常量查找”(Constant Lookup)机制, 这 4 个例子中哪些是可以正确执行的呢? 如果报错, 具体会报什么错?
+以上几个例子基本涵盖了本文将要介绍的解释器中的“常量查找”(Constant Lookup)机制, 这些例子中哪些是可以正确执行的呢? 如果报错, 具体会报什么错?
 
 这里先不揭晓答案, 读者可以自行在 irb console 中去执行这几段例程, 看看结果是怎么样的.
 
@@ -143,6 +129,13 @@ if 上面的方式找不到
 end
 ```
 
+现在回过头去看**前言**中提到的几个例子:
+
+1. B 中 Module.nesting == [A::B, A]，所以可以找到 A::CREF
+
+2. B 中 Module.nesting == [A::B], 所以找不到任何 A::CREF 定义，抛异常
+
+3. B 中 Module.nesting == [], 所以就算在 B 中定义了 block 中也是无法读取的
 
 
 # 参考文献
