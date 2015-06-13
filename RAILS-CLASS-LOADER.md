@@ -265,9 +265,13 @@ NameError: uninitialized constant Foo::Bar::Qux
 执行第二次访问还是走一样的路径，区别在于找 Foo::Qux 的时候发现已经有定义了，就不往上找了
   
   * 但已经存在的 Foo::Qux 并非是一个 missing 的常量，这里就出现了一个悖论：
+    
     * Ruby 内核告诉 ActiveSupport 我有一个常量找不到，可能是没加载文件，请帮我找到那个文件并加载这个常量
+    
     * 然后 ActiveSupport 开始努力去寻找这个常量，结果找了半天只找到一个已经存在的常量
+    
     * ActiveSupport 毕竟只是苦力的干活，Ruby 内核才是掌柜的干活，苦力肯定不能自作去加载一个 Ruby 没有加载的东西
+    
     * 无奈之下，ActiveSupport 也只好说自己没找到这个常量
 
 
