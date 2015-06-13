@@ -145,7 +145,133 @@ module Auth
 end
 ```
 
+Rails(ActiveSupport) 中任意常量 C 的查找算法伪代码:
+
+```
+if the class or module in which C is missing is Object
+  let ns = ''
+else
+  let M = the class or module in which C is missing
+ 
+  if M is anonymous
+    let ns = ''
+  else
+    let ns = M.name
+  end
+end
+ 
+loop do
+  # Look for a regular file.
+  for dir in autoload_paths
+    if the file "#{dir}/#{ns.underscore}/c.rb" exists
+      load/require "#{dir}/#{ns.underscore}/c.rb"
+ 
+      if C is now defined
+        return
+      else
+        raise LoadError
+      end
+    end
+  end
+ 
+  # Look for an automatic module.
+  for dir in autoload_paths
+    if the directory "#{dir}/#{ns.underscore}/c" exists
+      if ns is an empty string
+        let C = Module.new in Object and return
+      else
+        let C = Module.new in ns.constantize and return
+      end
+    end
+  end
+ 
+  if ns is empty
+    # We reached the top-level without finding the constant.
+    raise NameError
+  else
+    if C exists in any of the parent namespaces
+      # Qualified constants heuristic.
+      raise NameError
+    else
+      # Try again in the parent namespace.
+      let ns = the parent namespace of ns and retry
+    end
+  end
+end
+```
+
 ## 常见误区
+
+### 线程安全
+
+[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)一文中提到 Rails 3 下的 autoload 是线程不安全的，为什么呢?
+
+Rails 的 autoload 是基于 Ruby 内核常量查找机制的，其无法获取 nesting 内容，触发 const_missing 的位置在哪儿，Rails 就获得了那个 missing 的常量，具体加载的类和实际执行的路径有关，存在线程安全隐患，考虑下面的例子:
+
+```
+# qux.rb
+Qux = "I'm at the root!"
+
+# foo.rb
+module Foo
+end
+
+# foo/qux.rb
+module Foo
+  Qux = "I'm in Foo!"
+end
+
+# foo/bar.rb
+class Foo::Bar
+  def self.print_qux
+    puts Qux
+  end
+end
+```
+
+在 console 中执行 2 次 Foo::Bar.print_qux, 解释器抛异常:
+
+```
+2.1.5 :011 >   Foo::Bar.print_qux
+I'm in Foo!
+ => nil 
+2.1.5 :012 > Foo::Bar.print_qux
+NameError: uninitialized constant Foo::Bar::Qux
+  from /vagrant/demo1/foo/bar.rb:3:in print_qux'
+  from (irb):12
+  from /home/vagrant/.rvm/rubies/ruby-2.1.5/bin/irb:11:in <main>'
+```
+
+出现这种问题的大致原理:
+
+执行第一次的时候Ruby 尝试去取 Foo::Bar::Qux 发现找不到:
+
+  * 然后找 Object::Qux, 还是找不到
+
+  * 触发 const_missing 交给  ActiveSupport 处理
+
+  * 通过 ActiveSupport 访问 Foo::Bar::Qux:
+
+    * 加载顶层 module, foo.rb
+
+    * 找 Foo::Bar::Qux 找不到
+
+    * 加载 foo/qux.rb
+
+    * 找 Foo::Qux
+
+    * 很开心的加载了 Foo::Qux
+
+执行第二次访问还是走一样的路径，区别在于找 Foo::Qux 的时候发现已经有定义了，就不往上找了
+  
+  * 但已经存在的 Foo::Qux 并非是一个 missing 的常量，这里就出现了一个悖论：
+    * Ruby 内核告诉 ActiveSupport 我有一个常量找不到，可能是没加载文件，请帮我找到那个文件并加载这个常量
+    * 然后 ActiveSupport 开始努力去寻找这个常量，结果找了半天只找到一个已经存在的常量
+    * ActiveSupport 毕竟只是苦力的干活，Ruby 内核才是掌柜的干活，苦力肯定不能自作去加载一个 Ruby 没有加载的东西
+    * 无奈之下，ActiveSupport 也只好说自己没找到这个常量
+
+
+### autoload 目录下不要用 require
 
 
 
