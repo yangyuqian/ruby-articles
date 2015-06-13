@@ -85,9 +85,22 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 
 ## autoload_paths
 
+Rails 维护了类似于 $LOAD_PATH 的变量 autoload_paths，Rails 3 中默认会将 app/<sub_dir> 以及 lib 目录 全部加入 autoload_paths, Rails 4 中去掉了 lib, 不过我们可以自己加上去:
 
+```
+# config/application.rb
+config.autoload_paths << "#{Rails.root}/lib"
+```
 
-## Autoloading Algorithms
+autoload_paths 实际上是在 ActiveSupport::Dependencies.autoload_paths 维护的，Rails 中的 autoload 机制本质上是 ActiveSupport 的 autoload 机制.
+
+以下代码将当前目录加入 autoload_paths, 这样在 Ruby 找不到某个常量定义的时候，ActiveSupport 就会跑去找到定义的文件并自动加载（脱离 Rails 调试 ActiveSupport需要了解一些 [Bundler相关的知识](https://github.com/yangyuqian/ruby-articles/blob/master/BUNDLER.md)）.
+
+```
+ActiveSupport::Dependencies.autoload_paths << '.'
+```
+
+## Rails 中的常量查找算法
 
 ## Common Gotchas
 
