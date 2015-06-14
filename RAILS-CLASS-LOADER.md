@@ -367,7 +367,6 @@ class AuthService
   end
 end
 ```
-AuthService 是可以动态加载的, 也能够随时被重新加载.
 
 # 参考文献
 
