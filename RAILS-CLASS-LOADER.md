@@ -338,7 +338,6 @@ NameError: uninitialized constant Foo::Bar::Qux
     
     * 无奈之下，ActiveSupport 也只好说自己没找到这个常量（实际上是找到了，但一切以 Ruby 的判断为准！N 个凡是！）
 
-
 ### 不要在 App 启动的时候去 autoload 常量
 
 考虑以下常量赋值:
@@ -352,7 +351,7 @@ else
 end
 ```
 
-Rails 初始化时候的常量是不会被修改的, 之后就算我们修改了对应的 AuthService 实现, 也必须重启才会生效. 采用实现一个动态的 AccessPoint 可以解决这种问题:
+Rails 初始化时候的常量是不会被修改的, 之后就算我们修改了对应的 AuthService 实现, 也必须重启才会生效. 实现一个动态的 AccessPoint 可以解决这种问题:
 
 ```
 # app/models/auth_service.rb
