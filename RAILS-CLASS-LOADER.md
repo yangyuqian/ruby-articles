@@ -239,7 +239,7 @@ Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 lo
 
 ### 并发安全
 
-考虑为航天器建模, 先定一个默认的“会飞”的模型:
+考虑为航天器建模, 先定一个默认的飞行器的模型:
 
 ```
 # app/models/flight_model.rb
@@ -247,7 +247,7 @@ class FlightModel
 end
 ```
 
-定义一种飞机模型:
+然后定义一种飞机模型，并生产一架飞机(new 一个对象):
 
 ```
 # app/models/bell_x1/flight_model.rb
