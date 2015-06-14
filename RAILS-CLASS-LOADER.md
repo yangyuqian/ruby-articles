@@ -239,6 +239,37 @@ require 'something'
 
 Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 load, production 下用 require.
 
+### 并发安全
+
+考虑为航天器建模, 先定一个默认的“会飞”的模型:
+
+```
+# app/models/flight_model.rb
+class FlightModel
+end
+```
+
+定义一种飞机模型:
+
+```
+# app/models/bell_x1/flight_model.rb
+module BellX1
+  class FlightModel < FlightModel
+  end
+end
+ 
+# app/models/bell_x1/aircraft.rb
+module BellX1
+  class Aircraft
+    def initialize
+      @flight_model = FlightModel.new
+    end
+  end
+end
+```
+
+这里的 FlightModel.new 应该是想去新建一个 BellX1::FlightModel, 但如果 FlightModel 已经被加载过, 解释器就能找到一个合法的类定义, 不出发 Rails autoload, BellX1::FlightModel 将永远不可达. 这种情况下代码的结果和具体的执行路径有关, 存在并发安全问题.
+
 ### nesting 和 autoload 矛盾
 
 Rails 的 autoload 是基于 Ruby 内核常量查找机制的, 其无法获取 nesting 内容, 具体加载的类活着常量和实际执行的时机有关, 考虑下面的例子:
@@ -340,38 +371,6 @@ class AuthService
 end
 ```
 AuthService 是可以动态加载的, 也能够随时被重新加载.
-
-### 并发安全
-
-考虑为航天器建模, 先定一个默认的“会飞”的模型:
-
-```
-# app/models/flight_model.rb
-class FlightModel
-end
-```
-
-定义一种飞机模型:
-
-```
-# app/models/bell_x1/flight_model.rb
-module BellX1
-  class FlightModel < FlightModel
-  end
-end
- 
-# app/models/bell_x1/aircraft.rb
-module BellX1
-  class Aircraft
-    def initialize
-      @flight_model = FlightModel.new
-    end
-  end
-end
-```
-
-这里的 FlightModel.new 应该是想去新建一个 BellX1::FlightModel, 但如果 FlightModel 已经被加载过, 解释器就能找到一个合法的类定义, 不出发 Rails autoload, BellX1::FlightModel 将永远不可达. 这种情况下代码的结果和具体的执行路径有关, 存在并发安全问题.
-
 
 # 参考文献
 
