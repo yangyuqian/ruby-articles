@@ -1,8 +1,8 @@
 # 引言
 
-采用 Ruby 开发比较小的项目时, Ruby 内核类加载机制就够用了. 然而随着项目发展,类结构变得越来越复杂, Ruby 内核的类加载机制显得有些力不从心.
+Rails 的出现让基于 Ruby 来做大项目成为可能, 原因之一是其巧妙地解决了 Ruby 中复杂的类加载问题. 
 
-在 Ruby 中，Class/Module 都是以常量（Contant）的方式进行管理的. 而在解释器中 Module/Class 之间的嵌套关系可以简单的看作一个比较大的 Hash, 里面维护了顶层 Object 类到下面的所有 Module/Class 直接的引用关系，如：
+Ruby 中 Class/Module 都是以常量（Contant）的方式进行管理的. 而在解释器中 Module/Class 之间的嵌套关系可以简单的看作一个比较大的 Hash, 里面维护了顶层 Object 类到下面的所有 Module/Class 直接的引用关系，如：
 
 ```
 module Auth
@@ -30,9 +30,9 @@ module Auth
 end
 ```
 
-Ruby 内核已经提供了找到这个类的一些机制(在后面的章节会提到), 那问题来了，类结构比较复杂的情况下，怎么去保证一个正确的 User 类在被使用到的时候已经加载了呢？要知道类结构比较复杂的情况下，Ruby 内核类加载需要开发人员去 “人肉” 维护整个类树，这显然是个伪命题.
+内核已经提供了查找类常量的机制(在后面的章节会提到). 在类结构比较复杂时，怎么去保证一个正确的 User 类在被使用到的时候已经加载了呢? 小项目中可以人工维护这个依赖加载, 在项目中如果还让开发人员去 “人肉” 维护整个类依赖树, 这将是个伪命题.
 
-这时就有一些乐于给自己挖坑的 Technicians 想到了一个突破口: 重写 Ruby 的 const_missing 方法:
+这时有人想到了一个突破口: 重写 Ruby 的 const_missing 方法:
 
 ```
 module A
@@ -44,17 +44,15 @@ module A
 end
 ```
 
-显然在 A 用到 B 的时候它还没有被加载, 解释器发现找不到 B 就跑去告诉 const_missing 方法，说: “Find it, and load it”. 
+如果 A 用到 B 的时候它还没有被加载, 解释器发现找不到 B 就跑去告诉 const_missing 方法，说: “Find it, and load it”. 
 
-然后? 是不是就没有然后了？因为似乎问题已经解决了: const_missing 高兴的加载了类（先别管怎么加载的），然后解释器就开心用这个类去做一些羞羞的事情.
+然后? 是不是就没有然后了？因为似乎问题已经解决了: const_missing 高兴的加载了类（先别管怎么加载的）, 然后解释器就开心用这个类去做一些羞羞的事情.
 
-当然不是！！！首先从 Ruby 内核类加载的角度来看, 不论怎么去加载一个类，一定有一个潜在的条件: 文件的位置已知.
+当然不是！！！首先从内核类加载的角度来看, 不论怎么去加载一个类，一定有一个潜在的条件: 文件的位置已知.
 
-试想如果能自动加载，而我们却需要为自动加载“人肉”维护一个大的 Hash 表, 告诉解释器应该加载那个文件, 这个结果和直接用 Ruby 内核类加载就没本质区别了, 这位可怜的技术人员没能降低维护成本，又绕回来了！
+试想如果能自动加载，而我们却需要为自动加载“人肉”维护一个大的 Hash 表, 告诉解释器应该加载哪个文件, 结果和直接用内核类加载就没本质区别了, 又绕回来了！
 
-Rails 的出现让基于 Ruby 来做大项目成为可能, 我相信原因之一是因为 Rails 解决了以上提到的问题. 
-
-本文从一些实际问题入手，结合一些实例，从以下方面介绍 Rails 提供的类加载解决方案：
+本文从一些实例代码入手, 从以下方面介绍 Rails 提供的类加载解决方案：
 
 1. Ruby 内核类加载机制
 
@@ -65,44 +63,55 @@ Rails 的出现让基于 Ruby 来做大项目成为可能, 我相信原因之一
 
 # Ruby 内核类加载机制
 
-所谓“万法归宗”，不论怎么高大上的解决方案，落实到实现上，也是采用了一些已有的东西，Ruby 的内核加载机制就是万法的源头.
-
-Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具体参见 [Ruby 内核类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md), 而Rails等框架提供的能力就是用“启发式”的去找到一个类定义的文件, 并将其自动加载到内存中, 可见Ruby 和 Rails 珠联璧合、相得益彰.
+Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具体参见 [Ruby 内核类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md), 而Rails等框架提供的能力就是用“启发式”的去找到一个类定义的文件的位置, 将其自动加载到内存中.
 
 # Ruby “常量查找”(Constant Lookup)机制
 
-“启发式”的类加载方式需要有一个触发点来告诉响应的框架什么时候加载什么类: 这个触发点就是 Ruby 的 const_missing 方法, 而在什么时候会触发它呢？这就需要了解 Ruby 是怎么判断一个类（常量）是否已经在内存中定义了的原理了.
-
-详情参见 [Ruby “常量查找”(Constant Lookup)机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md)
+“启发式”的类加载方式需要有一个触发点来告诉 Rails 什么时候加载什么类: 这个触发点就是 Ruby 的 const_missing 方法, 而在什么时候会触发它呢? 这就需要了解 Ruby 是怎么判断一个类（常量）是否已经在内存中定义了的原理了, 即 [Ruby 中的常量查找](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md).
 
 # Rails 类加载机制
 
-前面做了这么多准备，就为了 Rails 这一哆嗦，本章主要介绍 Rails 中给出的“启发式”类加载解决方案。
+本章主要介绍 Rails 中给出的“启发式”类加载解决方案。
 
-值得重复说明的是: Rails 提供的是一种“启发式”的查找类定义文件的算法，真正找到之后加载用的还是 Ruby Kernel 提供的加载机制，具体方式和 RAILS_ENV 有关(dev 下用 load, prod 下用 require).
+值得强调的是: Rails 提供的是一种“启发式”的查找类定义文件位置的算法，真正找到之后加载用的还是 Ruby Kernel 提供的加载机制，具体方式和 RAILS_ENV 有关(dev 下用 load, prod 下用 require).
 
 基本流程是，解释器会先用 Ruby 内核的常量查找算法尝试去找一个类定义，找不到就告诉const_missing，然后 Rails 就跑去猜这个常量会定义在哪里，如果 Rails 还找不到，就抛异常.
 
 ## autoload_paths
 
-Rails 维护了类似于 $LOAD_PATH 的变量 autoload_paths，Rails 3 中默认会将 app 下的子目录以及 lib 目录全部加入 autoload_paths, Rails 4 中去掉了 lib, 不过我们可以自己加上去:
+Rails 维护了类似于 $LOAD_PATH 的变量 autoload_paths，Rails 3 中默认会将 app 下的子目录以及 lib 目录全部加入 autoload_paths, Rails 4 中去掉了 lib. 
+
+以下是一个刚升成的 Rails项目的 autoload 路径:
+
+```
+$ bin/rails r 'puts ActiveSupport::Dependencies.autoload_paths'
+.../app/assets
+.../app/controllers
+.../app/helpers
+.../app/mailers
+.../app/models
+.../app/controllers/concerns
+.../app/models/concerns
+.../test/mailers/previews
+.../lib
+```
+
+在 Rails 中还可以添加自定义的 autoload 路径:
 
 ```
 # config/application.rb
-config.autoload_paths << "#{Rails.root}/lib"
+config.autoload_paths << "#{Rails.root}/something"
 ```
 
-autoload_paths 实际上是在 ActiveSupport::Dependencies.autoload_paths 维护的，Rails 中的 autoload 机制本质上是 ActiveSupport 的 autoload 机制.
+autoload_paths 实际上是在 ActiveSupport::Dependencies.autoload_paths 中定义的, 这是一个 String Array, 可见 Rails 的 autoload 本质上是 ActiveSupport 的 autoload 机制. 本文中刻意淡化 Rails 中的一些 autoload 相关的配置入口, 转而从 ActiveSupport 的一些接口入手, 介绍 Rails 中的类加载. 脱离 Rails 调试 ActiveSupport需要了解一些 [Bundler相关的知识](https://github.com/yangyuqian/ruby-articles/blob/master/BUNDLER.md).
 
-以下代码将当前目录加入 autoload_paths, 这样在 Ruby 找不到某个常量定义的时候，ActiveSupport 就会跑去找到定义的文件并自动加载（脱离 Rails 调试 ActiveSupport需要了解一些 [Bundler相关的知识](https://github.com/yangyuqian/ruby-articles/blob/master/BUNDLER.md)）.
+以下代码将当前目录加入 autoload_paths, 这样在 Ruby 找不到某个常量定义的时候，ActiveSupport 就会尝试找到常量定义文件并自动加载.
 
 ```
 ActiveSupport::Dependencies.autoload_paths << '.'
 ```
 
 ## ActiveSupport 中的常量查找算法
-
-Rails 中仅仅提供了一个 autoload_paths 的配置入口，实际的内容都在 ActiveSupport 中维护，因此脱离 Rails 谈 Rails 的类加载机制可能更清楚一些.
 
 新建文件 demo/user.rb，定义如下:
 
@@ -133,9 +142,9 @@ module Demo
 end
 ```
 
-开一个 irb console, 用 load 命令手动加载 demo/role.rb，发现即使没有为 demo/user.rb 声明任何的 load/require, 它居然被正确访问到了! 这就是 Rails 中的 autoload 机制.
+开一个 irb console, 用 load 命令手动加载 demo/role.rb，发现即使没有为 demo/user.rb 声明任何的 load/require, 它居然这么顺利成章的自动加载了!
 
-Rails 中假设我们的类名和文件名是有直接关系的，例如 app/models/auth/user.rb 中就应该是以下定义:
+Rails 中假设类常量名和文件名是有直接关系的，例如 app/models/auth/user.rb 中就应该是以下定义:
 
 ```
 # app/models/auth/user.rb
@@ -145,7 +154,23 @@ module Auth
 end
 ```
 
-Rails(ActiveSupport) 中任意常量 C 的查找算法伪代码:
+Rails(ActiveSupport) 中的 autoload 会根据触发 const_missing 的常量名称来猜测并尝试加载对应的文件, 以加载前例中的 Auth::User 为例:
+
+1. Demo::Role 找不到 User 常量, 触发 const_missing(const_name), 此处 const_name == 'User'
+
+2. ActiveSupport 中先拼接出来一个查询的起点 "#{Demo::Role.name}::#{const_name}", 即 Demo::Role::User
+
+3. 首先尝试查找 autoload_paths 下的 demo/role/user.rb, 没找到
+
+4. 然后往上走一层, 尝试查找 autoload_paths 下的 demo/user.rb, 找到了
+
+如果加载了 demo/user.rb 发现 Demo::User 还是未定义的状态, Rails 默认会抛 LoadError 异常:
+
+```
+LoadError: Unable to autoload constant Demo::User, expected ./demo/user.rb to define it
+```
+
+具体算法的伪码如下:
 
 ```
 if the class or module in which C is missing is Object
@@ -202,11 +227,21 @@ end
 
 ## 常见误区
 
-### 线程安全
+### autoload 目录下不要用 require
 
-[Eager loading for greater good](http://blog.plataformatec.com.br/2012/08/eager-loading-for-greater-good)一文中提到 Rails 3 下的 autoload 是线程不安全的，为什么呢?
+没有 ActiveSupport 的情况下，我们需要用 Ruby 内核类加载机制来加载依赖:
 
-Rails 的 autoload 是基于 Ruby 内核常量查找机制的，其无法获取 nesting 内容，具体加载的类活着常量和实际执行的路径有关，存在线程安全隐患，考虑下面的例子:
+```
+require 'something'
+```
+
+这样干的问题主要是 require 只加载一次 something 类, 且只在第一次被加载，这样就永远不会触发 ActiveSupport 的 autoload，这就意味着，调试的时候如果修改了 something 需要重启整个 App.
+
+Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 load, production 下用 require.
+
+### nesting 和 autoload 矛盾
+
+Rails 的 autoload 是基于 Ruby 内核常量查找机制的, 其无法获取 nesting 内容, 具体加载的类活着常量和实际执行的时机有关, 考虑下面的例子:
 
 ```
 # qux.rb
@@ -274,19 +309,69 @@ NameError: uninitialized constant Foo::Bar::Qux
     
     * 无奈之下，ActiveSupport 也只好说自己没找到这个常量（实际上是找到了，但一切以 Ruby 的判断为准！N 个凡是！）
 
-Rails 3 中需要配置 eager_load 来避免潜在的并发问题，Rails 4 中就不需要做 eager_load 了，响应的配置方式参考 [Configuring Rails Applications](http://guides.rubyonrails.org/configuring.html)
 
-### autoload 目录下不要用 require
+### 不要再 App 启动的时候去 autoload 常量
 
-没有 ActiveSupport 的情况下，我们需要用 Ruby 内核类加载机制来加载依赖:
+考虑以下常量赋值:
 
 ```
-require 'something'
+# config/initializers/set_auth_service.rb:
+AUTH_SERVICE = if Rails.env.production?
+  RealAuthService
+else
+  MockedAuthService
+end
 ```
 
-这样干的问题主要是 require 只加载一次 something 类, 且只在第一次被加载，这样就永远不会触发 ActiveSupport 的 autoload，这就意味着，调试的时候如果修改了 something 需要重启整个 App.
+Rails 初始化时候的常量是不会被修改的, 之后就算我们修改了对应的 AuthService 实现, 也必须重启才会生效. 采用实现一个动态的 AccessPoint 可以解决这种问题:
 
-Rails 中推荐用 RAILS_ENV 来控制类加载方式, 即 development 下用 load, production 下用 require.
+```
+# app/models/auth_service.rb
+class AuthService
+  if Rails.env.production?
+    def self.instance
+      RealAuthService
+    end
+  else
+    def self.instance
+      MockedAuthService
+    end
+  end
+end
+```
+AuthService 是可以动态加载的, 也能够随时被重新加载.
+
+### 并发安全
+
+考虑为航天器建模, 先定一个默认的“会飞”的模型:
+
+```
+# app/models/flight_model.rb
+class FlightModel
+end
+```
+
+定义一种飞机模型:
+
+```
+# app/models/bell_x1/flight_model.rb
+module BellX1
+  class FlightModel < FlightModel
+  end
+end
+ 
+# app/models/bell_x1/aircraft.rb
+module BellX1
+  class Aircraft
+    def initialize
+      @flight_model = FlightModel.new
+    end
+  end
+end
+```
+
+这里的 FlightModel.new 应该是想去新建一个 BellX1::FlightModel, 但如果 FlightModel 已经被加载过, 解释器就能找到一个合法的类定义, 不出发 Rails autoload, BellX1::FlightModel 将永远不可达. 这种情况下代码的结果和具体的执行路径有关, 存在并发安全问题.
+
 
 # 参考文献
 
