@@ -266,7 +266,7 @@ module BellX1
 end
 ```
 
-这里的 FlightModel.new 应该是想去新建一个 BellX1::FlightModel, 但如果 FlightModel 已经被加载过, 解释器就能找到一个合法的类定义, 不出发 Rails autoload, BellX1::FlightModel 将永远不可达. 这种情况下代码的结果和具体的执行路径有关, 存在并发安全问题.
+这里的 FlightModel.new 应该是想去新建一个 BellX1::FlightModel, 但如果 FlightModel 已经被加载过, 解释器就能找到一个合法的类定义, 不触发 Rails autoload, 则 BellX1::FlightModel 不会被加载, 永远不可达. 这种情况下代码的结果和具体的执行路径有关, 存在并发安全问题.
 
 ### nesting 和 autoload 矛盾
 
