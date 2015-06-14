@@ -1,6 +1,6 @@
 # 引言
 
-Ruby 中 Class/Module 都是以常量（Contant）的方式进行管理的. 而在解释器中 Module/Class 之间的嵌套关系可以简单的看作一个比较大的 Hash, 里面维护了顶层 Object 类到下面的所有 Module/Class 直接的引用关系，如：
+Ruby 中 Class/Module 都是以常量（Constant）的方式进行管理的. 而在解释器中 Module/Class 之间的嵌套关系可以简单的看作一个比较大的 Hash, 里面维护了顶层 Object 类到下面的所有 Module/Class 直接的引用关系，如：
 
 ```
 module Auth
