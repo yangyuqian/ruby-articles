@@ -339,7 +339,7 @@ NameError: uninitialized constant Foo::Bar::Qux
     * 无奈之下，ActiveSupport 也只好说自己没找到这个常量（实际上是找到了，但一切以 Ruby 的判断为准！N 个凡是！）
 
 
-### 不要再 App 启动的时候去 autoload 常量
+### 不要在 App 启动的时候去 autoload 常量
 
 考虑以下常量赋值:
 
