@@ -79,7 +79,7 @@ Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具�
 
 Rails 维护了类似于 $LOAD_PATH 的变量 autoload_paths，Rails 3 中默认会将 app 下的子目录以及 lib 目录全部加入 autoload_paths, Rails 4 中去掉了 lib. 
 
-以下是一个刚升成的 Rails项目的 autoload 路径:
+以下是一个刚生成的 Rails项目的 autoload 路径:
 
 ```
 $ bin/rails r 'puts ActiveSupport::Dependencies.autoload_paths'
