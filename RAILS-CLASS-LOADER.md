@@ -1,7 +1,5 @@
 # 引言
 
-Rails 的出现让基于 Ruby 来做大项目成为可能, 原因之一是其巧妙地解决了 Ruby 中复杂的类加载问题. 
-
 Ruby 中 Class/Module 都是以常量（Contant）的方式进行管理的. 而在解释器中 Module/Class 之间的嵌套关系可以简单的看作一个比较大的 Hash, 里面维护了顶层 Object 类到下面的所有 Module/Class 直接的引用关系，如：
 
 ```
