@@ -270,7 +270,7 @@ end
 
 ### nesting 和 autoload 矛盾
 
-Rails 的 autoload 是基于 Ruby 内核常量查找机制的, 其无法获取 nesting 内容, 具体加载的类活着常量和实际执行的时机有关, 考虑下面的例子:
+Rails 的 autoload 是基于 Ruby 内核常量查找机制的, 其无法获取 nesting 内容, 具体加载的类或常量和实际执行的时机有关, 考虑下面的例子:
 
 ```
 # qux.rb
