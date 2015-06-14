@@ -59,15 +59,15 @@ end
 3. Rails 类加载机制
 
 
-# Ruby 内核类加载机制
+# Ruby 内核类加载
 
 Ruby 内核类加载机制已经提供了类加载所需要的所有能力, 具体参见 [Ruby 内核类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md), 而Rails等框架提供的能力就是用“启发式”的去找到一个类定义的文件的位置, 将其自动加载到内存中.
 
-# Ruby “常量查找”(Constant Lookup)机制
+# Ruby “常量查找”(Constant Lookup)
 
 “启发式”的类加载方式需要有一个触发点来告诉 Rails 什么时候加载什么类: 这个触发点就是 Ruby 的 const_missing 方法, 而在什么时候会触发它呢? 这就需要了解 Ruby 是怎么判断一个类（常量）是否已经在内存中定义了的原理了, 即 [Ruby 中的常量查找](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md).
 
-# Rails 类加载机制
+# Rails 类加载
 
 本章主要介绍 Rails 中给出的“启发式”类加载解决方案。
 
