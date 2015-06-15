@@ -8,10 +8,10 @@
 
 2. [Ruby 常量查找](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md)
 
-3. [ActiveSupport 对内核类加载的扩展]()
+3. [ActiveSupport 对内核类加载的扩展](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#activesupport-对内核类加载的扩展)
 
-4. [Rails 自动类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#activesupport-中的常量查找算法)
+4. [Rails 自动类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#rails-自动类加载)
 
-5. [Rails 类加载中的常见误区](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#常见误区)
+5. [Rails 类加载中的常见误区](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#rails-类加载中的常见误区)
 
 

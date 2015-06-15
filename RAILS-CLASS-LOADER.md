@@ -2,13 +2,15 @@
 
 本文从一些实例代码入手, 尽可能全面地介绍了 Rails 类加载及涉及的底层技术知识：
 
-1. Ruby 内核类加载
+1. [Ruby 内核类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md)
 
-2. Ruby中的 “常量查找”(Constant Lookup)
+2. [Ruby 常量查找](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-CONSTANT-LOOKUP.md)
 
-3. ActiveSupport 对内核类加载的扩展
+3. [ActiveSupport 对内核类加载的扩展](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#activesupport-对内核类加载的扩展)
 
-4. Rails 类加载中的常见误区
+4. [Rails 自动类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#rails-自动类加载)
+
+5. [Rails 类加载中的常见误区](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md#rails-类加载中的常见误区)
 
 # Ruby 内核类加载
 
