@@ -8,7 +8,7 @@
 
 3. ActiveSupport 对内核类加载的扩展
 
-4. Rails 自动类加载
+4. Rails 类加载中的常见误区
 
 # Ruby 内核类加载
 
@@ -299,7 +299,7 @@ loop do
 end
 ```
 
-## 常见误区
+## Rails 类加载中的常见误区
 
 ### autoload 目录下不要用 require
 
