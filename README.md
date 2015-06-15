@@ -2,6 +2,8 @@
 
 ## [Rails 中的类加载机制](https://github.com/yangyuqian/ruby-articles/blob/master/RAILS-CLASS-LOADER.md)
 
+附: [本文](https://ruby-china.org/topics/26034) 已经上传至 Ruby-China.
+
 本文结合实例代码介绍了：
 
 1. [Ruby 内核类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md)
