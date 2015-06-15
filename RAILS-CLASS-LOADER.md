@@ -1,6 +1,6 @@
 # 引言
 
-本文从一些实例代码入手, 尽可能全面地介绍了 Rails 类加载及涉及的底层技术知识：
+本文从一些实例代码入手, 尽可能全面地介绍了 Rails 类加载及涉及的相关技术知识：
 
 1. [Ruby 内核类加载](https://github.com/yangyuqian/ruby-articles/blob/master/RUBY-KERNEL-CLASS-LOADER.md)
 
